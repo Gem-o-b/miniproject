@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta property="og:title" content="아이유 팬명록" />
+<meta property="og:description" content="아이유 팬명록1" />
+<meta property="og:image" content="https://movie-phinf.pstatic.net/20210715_95/1626338192428gTnJl_JPEG/movie_image.jpg" />
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <title>초미니홈피 - 팬명록</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap"
+          rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Noto Serif KR', serif;
+        }
+
+        .mypic {
+            width: 100%;
+            height: 300px;
+
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://health.chosun.com/site/data/img_dir/2022/07/28/2022072802389_0.jpg');
+            background-position: center 30%;
+
+
+            color: white;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mypost {
+            width: 95%;
+            max-width: 500px;
+            margin: 20px auto 20px auto;
+
+            box-shadow: 0px 0px 3px 0px black;
+            padding: 20px;
+        }
+
+        .mypost > button {
+            margin-top: 15px;
+        }
+
+        .mycards {
+            width: 95%;
+            max-width: 500px;
+            margin: auto;
+        }
+
+        .mycards > .card {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+            function pageMove(index){
+                location.href="/saveAdoptView?index_give="+index;
+            }
+            function save_comment() {
+            $.ajax({
+                type: 'POST',
+                url: '/saveAdopt',
+                data: {index_give:$('#index').val(), name_give: $('#name').val(), age_give : $('#age').val(), address_give : $('#address').val(), reason_give : $('#reason').val()},
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            })
+        }
+
+
+        $(document).ready(function () {
+            set_temp()
+
+        });
+
+
+        function set_temp() {
+             let tmp
+             $.ajax({
+                type: "GET",
+                url: "https://api.odcloud.kr/api/15086791/v1/uddi:1f67b250-aa73-480c-ae30-b7bdd2e02da4?page=1&perPage=10&serviceKey=gh4WMy5WOL95FncpqR9jFWWu5d87ChyQz73rN27jKsQ3AP5WfipVK6LCGtMx7Vy8%2F2ESZ5z2jFzVOGA3lOveQA%3D%3D",
+                data: {},
+                success: function (response) {
+                    // console.log(response)
+                     $('#names-q1').empty()
+                   tmp = response.data
+                    // console.log(tmp)
+
+                    tmp.map((data,idx)=>{
+                            $('#names-q1').append(`<tr class="" ><td>${data.공고번호}</td><td>${data.축종}</td> <td>${data.품종}</td><td>${data.색상}</td><td>${data.성별}</td><td>${data.나이}</td><td>${data.발생장소}</td><td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="${data.공고번호}">입양하기</button></td><td><button type="button" class="btn btn-success" onClick="pageMove('${data.공고번호}')">상세보기</button></td></tr>`)
+
+                    })
+                }
+            })
+
+        }
+
+
+    </script>
+</head>
+<body>
+<div class="mypic">
+    <h1>아이유 팬명록</h1>
+    <p>현재기온: <span id="temp">36</span>도</p>
+</div>
+<table class="table table-hover">
+<tr>
+
+    <td>공고번호</td>
+    <td>축종</td>
+    <td>품종</td>
+    <td>색상</td>
+    <td>성별</td>
+    <td>나이</td>
+    <td>발생장소</td>
+    <td>입양하기</td>
+    <td>상세정보</td>
+</tr>
+</thead>
+<tbody id="names-q1">
+
+</tbody>
+</table>
+</div>
+</table>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">입양신청서</h1>
+
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+            <input type="hidden" class="form-control" id="index" >
+          <div class="mb-3">
+
+            <label for="recipient-name" class="col-form-label">이름 :</label>
+            <input type="text" class="form-control" id="name">
+
+          </div>
+            <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">나이 :</label>
+            <input type="text" class="form-control" id="age">
+          </div>
+            <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">주소 :</label>
+            <input type="text" class="form-control" id="address">
+          </div>
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">입양 이유 (200자 이내)</label>
+            <textarea class="form-control" id="reason" maxlength="200"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="save_comment()">입양신청</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>
+
+<script>
+
+      const exampleModal = document.getElementById('exampleModal')
+    exampleModal.addEventListener('show.bs.modal', event => {
+    console.log("aaa")
+  const button = event.relatedTarget
+
+  const recipient = button.getAttribute('data-bs-whatever')
+
+  const modalTitle = exampleModal.querySelector('.modal-title')
+  const modalBodyInput = exampleModal.querySelector('.modal-body input')
+
+  // modalTitle.textContent = `New message to ${recipient}`
+  modalBodyInput.value = recipient
+})
+</script>
